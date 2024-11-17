@@ -1,8 +1,34 @@
 import { createRoot } from 'react-dom/client';
+import { useContext } from "react";
 
-// Clear the existing HTML content
-document.body.innerHTML = '<div id="app"></div>';
+import { CssBaseline, CssVarsProvider } from "@mui/joy";
 
-// Render your React component instead
+import { ImageUploader } from "./image-uploader";
+import { AppContext, AppContextProvider } from "./app-context";
+import { Editor } from "./editor";
+
 const root = createRoot(document.getElementById('app'));
-root.render(<h1>Hello, world</h1>);
+
+const App = () => {
+    const { image } = useContext(AppContext);
+
+    return (
+        <main>
+            {
+                image == null
+                    ? <ImageUploader/>
+                    : <Editor/>
+            }
+        </main>
+    );
+}
+
+
+root.render(
+    <CssVarsProvider defaultMode="dark">
+        <CssBaseline/>
+        <AppContextProvider>
+            <App/>
+        </AppContextProvider>
+    </CssVarsProvider>
+);

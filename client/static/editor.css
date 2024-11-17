@@ -1,0 +1,12 @@
+.filters-title {
+    padding: 5px 10px;
+}
+
+.filter-item {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.editor-image-container {
+    padding: 10px;
+}

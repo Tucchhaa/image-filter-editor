@@ -1,0 +1,19 @@
+.image-uploader {
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-uploader__container {
+    width: 40%;
+    height: 25%;
+    border: 3px dashed;
+    padding: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
