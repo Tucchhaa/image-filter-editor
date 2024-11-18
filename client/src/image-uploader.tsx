@@ -2,19 +2,43 @@ import { useCallback, useContext } from "react";
 import { AppContext } from "./app-context";
 import { useDropzone } from "react-dropzone";
 import { Box, Grid, Typography, useTheme } from "@mui/joy";
+import { imageService } from "./services/imageService";
 
 export const ImageUploader = () => {
     const { updateAppState } = useContext(AppContext);
     const theme = useTheme();
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
         if(acceptedFiles.length === 0)
             return;
 
         const file = acceptedFiles[0];
         const preview = URL.createObjectURL(file);
 
-        updateAppState({ image: { file, preview } });
+        // First update UI with the preview
+        updateAppState({ 
+            image: { 
+                file, 
+                preview 
+            } 
+        });
+
+        try {
+            // Then upload to server
+            const serverResponse = await imageService.uploadImage(file);
+            
+            // Update state with server response
+            updateAppState({ 
+                image: { 
+                    file, 
+                    preview,
+                    serverResponse 
+                } 
+            });
+        } catch (error) {
+            console.error('Upload failed:', error);
+            // You might want to add error handling UI here
+        }
     }, [updateAppState]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({

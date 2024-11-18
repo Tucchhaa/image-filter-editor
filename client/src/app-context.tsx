@@ -1,13 +1,25 @@
 import { useState, createContext, ReactNode, FC, useMemo, useCallback } from 'react'
 
 export interface UploadedImage {
-    file: File,
-    preview: string
+    file: File;
+    preview: string;
+    serverResponse?: UploadResponse;  // Add this new field
+}
+
+// Add this interface for the server response
+export interface UploadResponse {
+    status: string;
+    message: string;
+    details: {
+        original_size: number;
+        filename: string;
+        mock_upscale_factor: number;
+    };
 }
 
 export interface AppState {
-    image: UploadedImage | null,
-    updateAppState: (newState: Partial<AppState>) => void
+    image: UploadedImage | null;
+    updateAppState: (newState: Partial<AppState>) => void;
 }
 
 const defaultState: AppState = {
@@ -22,12 +34,19 @@ export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) =>
 
     const updateAppState = useCallback((newState: Partial<AppState>) => {
         if (newState.image !== undefined) {
-            setImage(newState.image);
+            setImage(prevImage => {
+                if (newState.image === null) return null;
+                return {
+                    ...prevImage,
+                    ...newState.image,
+                };
+            });
         }
     }, []);
 
     const contextValue = useMemo(() => ({
-        image, updateAppState
+        image, 
+        updateAppState
     } as AppState), [image, updateAppState]);
 
     return (
