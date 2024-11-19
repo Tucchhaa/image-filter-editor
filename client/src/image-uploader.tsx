@@ -12,9 +12,20 @@ export const ImageUploader = () => {
             return;
 
         const file = acceptedFiles[0];
-        const preview = URL.createObjectURL(file);
+        const blobUrl = URL.createObjectURL(file);
 
-        updateAppState({ image: { file, preview } });
+        const image = new Image();
+        image.src = blobUrl;
+
+        image.onload = () => {
+            const { naturalWidth: width, naturalHeight: height } = image;
+            const canvas = new OffscreenCanvas(width, height);
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, width, height);
+            updateAppState({ imageData });
+        }
     }, [updateAppState]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({

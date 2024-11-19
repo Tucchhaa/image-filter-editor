@@ -5,19 +5,20 @@ import { CssBaseline, CssVarsProvider } from "@mui/joy";
 
 import { ImageUploader } from "./image-uploader";
 import { AppContext, AppContextProvider } from "./app-context";
-import { Editor } from "./editor";
+import { Editor } from "./editor/editor";
+import { EditorContextProvider } from "./editor/editor-context";
 
 const root = createRoot(document.getElementById('app'));
 
 const App = () => {
-    const { image } = useContext(AppContext);
+    const { imageData } = useContext(AppContext);
 
     return (
         <main>
             {
-                image == null
+                imageData == null
                     ? <ImageUploader/>
-                    : <Editor/>
+                    : <EditorContextProvider><Editor/></EditorContextProvider>
             }
         </main>
     );

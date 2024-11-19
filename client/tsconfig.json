@@ -5,18 +5,19 @@
 	"compilerOptions": {
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"target": "ES6",
+		"target": "es6",
+		"module": "es6",
 		"allowJs": true,
 		"checkJs": true,
 		"resolveJsonModule": true,
 		"moduleDetection": "force",
 		"isolatedModules": true,
 		"strict": true,
+		"sourceMap": true,
 		"noUncheckedIndexedAccess": true,
 		"moduleResolution": "Bundler",
-		"module": "ES6",
 		"noEmit": true,
-		"lib": ["ES6", "DOM", "DOM.Iterable"],
+		"lib": ["es6", "DOM", "DOM.Iterable"],
 		"jsx": "react",
 		"types": ["@types/react", "@types/react-dom"]
 	}
