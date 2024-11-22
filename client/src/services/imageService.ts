@@ -1,44 +1,38 @@
-interface UploadResponse {
-    status: string;
-    message: string;
-    details: {
-        original_size: number;
-        filename: string;
-        mock_upscale_factor: number;
-    };
-}
+// imageService.ts
+import { UploadResponse } from '../app-context';
 
-const API_URL = 'http://localhost:5000';
+class ImageService {
+    private readonly API_URL = 'http://localhost:5000';
 
-export const imageService = {
     async uploadImage(file: File): Promise<UploadResponse> {
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('file', file);
 
         try {
-            const response = await fetch(`${API_URL}/upload`, {
+            console.log('Starting upload...'); // Debug log
+
+            const response = await fetch(`${this.API_URL}/upload`, {
                 method: 'POST',
                 body: formData,
+                mode: 'cors',
             });
 
+            console.log('Response status:', response.status); // Debug log
+
+            const responseJson = await response.json();
+
             if (!response.ok) {
-                throw new Error('Upload failed');
+                console.error('Error response:', responseJson); // Debug log
+                throw new Error(responseJson.message || 'Upload failed');
             }
 
-            return await response.json();
+            console.log('Success response:', responseJson); // Debug log
+            return responseJson as UploadResponse;
         } catch (error) {
-            console.error('Error uploading image:', error);
-            throw error;
-        }
-    },
-
-    async checkServerStatus(): Promise<{ status: string }> {
-        try {
-            const response = await fetch(`${API_URL}/status`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error checking server status:', error);
+            console.error('Upload error:', error);
             throw error;
         }
     }
-};
+}
+
+export const imageService = new ImageService();
