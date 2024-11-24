@@ -1,12 +1,12 @@
 import { useState, createContext, ReactNode, FC, useMemo, useCallback } from 'react'
 
+// Keep the new interfaces from server_timothy branch
 export interface UploadedImage {
     file: File;
     preview: string;
-    serverResponse?: UploadResponse;  // Add this new field
+    serverResponse?: UploadResponse;
 }
 
-// Add this interface for the server response
 export interface UploadResponse {
     status: string;
     message: string;
@@ -17,22 +17,28 @@ export interface UploadResponse {
     };
 }
 
+// Combine both AppState interfaces
 export interface AppState {
     image: UploadedImage | null;
+    imageData: ImageData | null;
     updateAppState: (newState: Partial<AppState>) => void;
 }
 
+// Update defaultState to include both properties
 const defaultState: AppState = {
     image: null,
-    updateAppState: (newState?: Partial<AppState>) => {},
+    imageData: undefined,
+    updateAppState: undefined,
 };
 
 export const AppContext = createContext<AppState>(defaultState);
 
 export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [image, setImage] = useState<UploadedImage | null>(null);
+    const [imageData, setImageData] = useState<ImageData | null>(null);
 
     const updateAppState = useCallback((newState: Partial<AppState>) => {
+        // Handle both image and imageData updates
         if (newState.image !== undefined) {
             setImage(prevImage => {
                 if (newState.image === null) return null;
@@ -42,12 +48,16 @@ export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) =>
                 };
             });
         }
+        if (newState.imageData !== undefined) {
+            setImageData(newState.imageData);
+        }
     }, []);
 
     const contextValue = useMemo(() => ({
-        image, 
+        image,
+        imageData, 
         updateAppState
-    } as AppState), [image, updateAppState]);
+    } as AppState), [image, imageData, updateAppState]);
 
     return (
         <AppContext.Provider value={contextValue}>

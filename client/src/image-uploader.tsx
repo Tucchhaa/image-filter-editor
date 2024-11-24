@@ -24,20 +24,39 @@ export const ImageUploader = () => {
         });
 
         try {
-            // Then upload to server
-            const serverResponse = await imageService.uploadImage(file);
+            // Process image data
+            const image = new Image();
+            image.src = preview;
             
-            // Update state with server response
-            updateAppState({ 
-                image: { 
-                    file, 
-                    preview,
-                    serverResponse 
-                } 
-            });
+            image.onload = async () => {
+                // Handle image data processing
+                const { naturalWidth: width, naturalHeight: height } = image;
+                const canvas = new OffscreenCanvas(width, height);
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(image, 0, 0);
+                const imageData = ctx.getImageData(0, 0, width, height);
+                updateAppState({ imageData });
+
+                // Upload to server
+                try {
+                    const serverResponse = await imageService.uploadImage(file);
+                    
+                    // Update state with server response
+                    updateAppState({ 
+                        image: { 
+                            file, 
+                            preview,
+                            serverResponse 
+                        } 
+                    });
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                    // You might want to add error handling UI here
+                }
+            };
         } catch (error) {
-            console.error('Upload failed:', error);
-            // You might want to add error handling UI here
+            console.error('Image processing failed:', error);
+            // Handle image processing error
         }
     }, [updateAppState]);
 
