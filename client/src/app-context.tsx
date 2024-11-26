@@ -1,67 +1,83 @@
-import { useState, createContext, ReactNode, FC, useMemo, useCallback } from 'react'
+import React, { createContext, useContext, useState } from 'react';
+import { ImageHistory } from './editor/image-history';
 
-// Keep the new interfaces from server_timothy branch
-export interface UploadedImage {
-    file: File;
-    preview: string;
-    serverResponse?: UploadResponse;
-}
-
-export interface UploadResponse {
-    status: string;
-    message: string;
-    details: {
-        original_size: number;
-        filename: string;
-        mock_upscale_factor: number;
-    };
-}
-
-// Combine both AppState interfaces
-export interface AppState {
-    image: UploadedImage | null;
-    imageData: ImageData | null;
-    updateAppState: (newState: Partial<AppState>) => void;
-}
-
-// Update defaultState to include both properties
-const defaultState: AppState = {
-    image: null,
-    imageData: undefined,
-    updateAppState: undefined,
+type AppContextType = {
+  imageHistory: ImageHistory;
+  addImageToHistory: (imageData: ImageData) => void;
+  getLastImage: () => ImageData | null;
+  uploadImageToServer: () => Promise<void>;
 };
 
-export const AppContext = createContext<AppState>(defaultState);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [image, setImage] = useState<UploadedImage | null>(null);
-    const [imageData, setImageData] = useState<ImageData | null>(null);
+export const AppProvider: React.FC = ({ children }) => {
+  const [imageHistory] = useState(new ImageHistory());
 
-    const updateAppState = useCallback((newState: Partial<AppState>) => {
-        // Handle both image and imageData updates
-        if (newState.image !== undefined) {
-            setImage(prevImage => {
-                if (newState.image === null) return null;
-                return {
-                    ...prevImage,
-                    ...newState.image,
-                };
-            });
-        }
-        if (newState.imageData !== undefined) {
-            setImageData(newState.imageData);
-        }
-    }, []);
+  const addImageToHistory = (imageData: ImageData) => {
+    imageHistory.push(imageData);
+  };
 
-    const contextValue = useMemo(() => ({
-        image,
-        imageData, 
-        updateAppState
-    } as AppState), [image, imageData, updateAppState]);
+  const getLastImage = () => {
+    return imageHistory.getLast() || null;
+  };
 
-    return (
-        <AppContext.Provider value={contextValue}>
-            {children}
-        </AppContext.Provider>
-    );
-}
+  const uploadImageToServer = async () => {
+    const lastImage = getLastImage();
+    if (!lastImage) {
+      console.error('No image to upload');
+      return;
+    }
+
+    const blob = await convertImageDataToBlob(lastImage);
+    const formData = new FormData();
+    formData.append('file', blob, 'image.png');
+
+    try {
+      const response = await fetch('http://localhost:5000/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+      console.log('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        imageHistory,
+        addImageToHistory,
+        getLastImage,
+        uploadImageToServer,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+
+const convertImageDataToBlob = async (imageData: ImageData): Promise<Blob> => {
+  const canvas = document.createElement('canvas');
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas context is not available');
+  ctx.putImageData(imageData, 0, 0);
+
+  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob!), 'image/png'));
+};
+
+
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};
