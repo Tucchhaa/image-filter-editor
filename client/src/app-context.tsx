@@ -1,41 +1,33 @@
-import { useState, createContext, ReactNode, FC, useMemo, useCallback, useContext } from 'react';
+import { useState, createContext, ReactNode, FC, useMemo, useCallback } from 'react'
 
 export interface AppState {
-  imageData: ImageData | null;
-  updateAppState: (newState: Partial<AppState>) => void;
+    imageData: ImageData | null,
+    updateAppState: (newState: Partial<AppState>) => void
 }
 
 const defaultState: AppState = {
-  imageData: null,
-  updateAppState: () => {},
+    imageData: undefined,
+    updateAppState: undefined,
 };
 
 export const AppContext = createContext<AppState>(defaultState);
 
 export const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [imageData, setImageData] = useState<ImageData | null>(null);
+    const [imageData, setImageData] = useState<ImageData | null>(null);
 
-  const updateAppState = useCallback((newState: Partial<AppState>) => {
-    if (newState.imageData !== undefined) {
-      setImageData(newState.imageData);
-    }
-  }, []);
+    const updateAppState = useCallback((newState: Partial<AppState>) => {
+        if (newState.imageData !== undefined) {
+            setImageData(newState.imageData);
+        }
+    }, []);
 
-  const contextValue = useMemo(
-    () => ({
-      imageData,
-      updateAppState,
-    }),
-    [imageData, updateAppState]
-  );
+    const contextValue = useMemo(() => ({
+        imageData, updateAppState
+    } as AppState), [imageData, updateAppState]);
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
-};
-
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useAppContext must be used within an AppProvider');
-  }
-  return context;
-};
+    return (
+        <AppContext.Provider value={contextValue}>
+            {children}
+        </AppContext.Provider>
+    );
+}

@@ -113,9 +113,6 @@ def upscale_image():
 
         upscaled_image_url = f"http://localhost:5100/uploads/{processing_result['new_filename']}"
 
-        if not processing_result['success']:
-            return error_response('Error processing image', 500, processing_result['error'])
-
         return jsonify({
             'status': 'success',
             'message': 'Image upscaled successfully',

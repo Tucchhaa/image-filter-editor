@@ -13,16 +13,12 @@ export const ImageUploader = () => {
         const file = acceptedFiles[0];
         const preview = URL.createObjectURL(file);
     
-        updateAppState({ 
-            image: { file, preview } 
-        });
-    
         const image = new Image();
         image.src = preview;
         
         image.onload = () => {
             const { naturalWidth: width, naturalHeight: height } = image;
-            const canvas = document.createElement('canvas');
+            const canvas = new OffscreenCanvas(width, height);
             canvas.width = width;
             canvas.height = height;
             
