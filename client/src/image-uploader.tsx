@@ -7,25 +7,27 @@ export const ImageUploader = () => {
     const { updateAppState } = useContext(AppContext);
     const theme = useTheme();
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        if(acceptedFiles.length === 0)
-            return;
-
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
+        if (acceptedFiles.length === 0) return;
+    
         const file = acceptedFiles[0];
-        const blobUrl = URL.createObjectURL(file);
-
+        const preview = URL.createObjectURL(file);
+    
         const image = new Image();
-        image.src = blobUrl;
-
+        image.src = preview;
+        
         image.onload = () => {
             const { naturalWidth: width, naturalHeight: height } = image;
             const canvas = new OffscreenCanvas(width, height);
-            const ctx = canvas.getContext("2d");
+            canvas.width = width;
+            canvas.height = height;
+            
+            const ctx = canvas.getContext('2d');
             ctx.drawImage(image, 0, 0);
-
+            
             const imageData = ctx.getImageData(0, 0, width, height);
             updateAppState({ imageData });
-        }
+        };
     }, [updateAppState]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({

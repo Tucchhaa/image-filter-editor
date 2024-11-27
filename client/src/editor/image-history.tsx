@@ -4,7 +4,7 @@ export class ImageHistory {
     private readonly size: number = HISTORY_SIZE;
     readonly stack: ImageData[] = [];
 
-    constructor(stack: ImageData[]) {
+    constructor(stack: ImageData[] = []) {
         this.stack = stack;
     }
 
