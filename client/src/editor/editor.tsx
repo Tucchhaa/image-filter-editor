@@ -3,6 +3,7 @@ import { ReactCompareSlider } from "react-compare-slider";
 import { Divider, Grid, Stack, Typography, useTheme } from "@mui/joy";
 
 import { Laplacian } from "./filters/laplacian-filter";
+import { Upscaling } from "./filters/upscaling-filter";
 import { Filter } from "./filters/filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
@@ -12,7 +13,8 @@ export const Editor = () => {
     const { imageHistory } = useContext(EditorContext);
 
     const filters: Filter[] = useMemo(() => [
-        Laplacian
+        Laplacian,
+        Upscaling
     ], []);
 
     return (
