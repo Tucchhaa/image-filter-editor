@@ -1,1 +1,1 @@
-# Image Filter Editor
+# Image BaseFilter Editor

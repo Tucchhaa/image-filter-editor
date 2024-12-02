@@ -4,7 +4,7 @@ import { Button, Chip, Divider, Stack, ToggleButtonGroup, Typography, useTheme }
 
 import { Laplacian } from "./filters/laplacian-filter";
 import { Upscaling } from "./filters/upscaling-filter";
-import { Filter } from "./filters/filter";
+import { BaseFilter } from "./filters/base-filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
@@ -16,7 +16,7 @@ export const Editor = () => {
     const { imageHistory } = useContext(EditorContext);
     const [compareMode, setCompareMode] = useState("previous")
 
-    const filters: Filter[] = useMemo(() => [
+    const filters: BaseFilter[] = useMemo(() => [
         Laplacian,
         Upscaling,
         GammaCorrection,

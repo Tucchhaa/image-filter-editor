@@ -1,10 +1,10 @@
-import { Filter } from "./filters/filter";
+import { BaseFilter } from "./filters/base-filter";
 import { useCallback, useContext, useState } from "react";
 import { EditorContext } from "./editor-context";
 import { Box, Button, Stack, Typography } from "@mui/joy";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-export const EditorItem = ({ filter }: { filter: Filter }) => {
+export const EditorItem = ({ filter }: { filter: BaseFilter }) => {
     const [opened, setOpened] = useState(false);
     const [options, setOptions] = useState(null);
     const { applyFilter, processingFilter } = useContext(EditorContext);
