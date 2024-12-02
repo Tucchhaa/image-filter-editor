@@ -6,6 +6,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 export const EditorItem = ({ filter }: { filter: Filter }) => {
     const [opened, setOpened] = useState(false);
+    const [options, setOptions] = useState(null);
     const { applyFilter, processingFilter } = useContext(EditorContext);
 
     const toggleOpened = useCallback(() => { setOpened(!opened); }, [opened]);
@@ -20,14 +21,15 @@ export const EditorItem = ({ filter }: { filter: Filter }) => {
             { opened &&
                 <>
                     <Box sx={{ margin: '4px 0 8px' }}>
-                        <filter.Options/>
+                        <filter.Options setOptions={setOptions} />
                     </Box>
 
                     <Stack direction="row">
                         <Button
                             loading={isLoading}
                             disabled={isDisabled}
-                            onClick={() => applyFilter(filter)}
+                            onClick={() => { applyFilter(filter, options); }
+                        }
                             size="sm"
                         >
                             Apply
