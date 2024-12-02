@@ -2,9 +2,11 @@ const HISTORY_SIZE = 5;
 
 export class ImageHistory {
     private readonly size: number = HISTORY_SIZE;
+    readonly original: ImageData;
     readonly stack: ImageData[] = [];
 
     constructor(stack: ImageData[] = []) {
+        this.original = stack[0];
         this.stack = stack;
     }
 

@@ -1,6 +1,6 @@
-import { useContext, useMemo, Fragment, useRef, useEffect } from "react";
+import { useContext, useMemo, Fragment, useRef, useEffect, useState } from "react";
 import { ReactCompareSlider } from "react-compare-slider";
-import { Divider, Stack, Typography, useTheme } from "@mui/joy";
+import { Button, Chip, Divider, Stack, ToggleButtonGroup, Typography, useTheme } from "@mui/joy";
 
 import { Laplacian } from "./filters/laplacian-filter";
 import { Upscaling } from "./filters/upscaling-filter";
@@ -13,6 +13,7 @@ import { Gaussian } from "./filters/gaussian-filter";
 export const Editor = () => {
     const theme = useTheme();
     const { imageHistory } = useContext(EditorContext);
+    const [compareMode, setCompareMode] = useState("previous")
 
     const filters: Filter[] = useMemo(() => [
         Laplacian,
@@ -50,8 +51,21 @@ export const Editor = () => {
                 </Stack>
             </div>
             <div className="editor-image-container">
+                <div className="editor-compare-mode">
+                    <Chip variant="plain">Compare mode</Chip>
+                    <ToggleButtonGroup
+                        variant='outlined'
+                        size='sm'
+                        value={compareMode}
+                        onChange={(_, value) => { setCompareMode(value); }}
+                    >
+                        <Button value="previous">Previous</Button>
+                        <Button value="original">Original</Button>
+                    </ToggleButtonGroup>
+                </div>
+
                 <ReactCompareSlider
-                    itemOne={<CompareSliderImage imageData={imageHistory.getPreviousImage()}/>}
+                    itemOne={<CompareSliderImage imageData={compareMode === 'original' ? imageHistory.original : imageHistory.getPreviousImage()}/>}
                     itemTwo={<CompareSliderImage imageData={imageHistory.getCurrentImage()}/>}
                 />
             </div>
