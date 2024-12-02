@@ -23,13 +23,9 @@ export const Laplacian = {
 } as Filter;
 
 function Options({ setOptions }) {
-    const [value, setValue] = useState<string>('4-connectivity');
+    const [type, setType] = useState<string>('4-connectivity');
 
-    const onChange = useCallback((event, newValue) => {
-        setValue(newValue);
-    }, [value]);
-
-    const options = useMemo(() => ({ type: value }), [value]);
+    const options = useMemo(() => ({ type }), [type]);
 
     useEffect(() => { setOptions(options); }, [setOptions, options]);
 
@@ -37,8 +33,8 @@ function Options({ setOptions }) {
         <ToggleButtonGroup
             variant='outlined'
             size='sm'
-            value={value}
-            onChange={onChange}
+            value={type}
+            onChange={(_, value) => { setType(value); }}
         >
             <Button value="4-connectivity">4-connectivity</Button>
             <Button value="8-connectivity">8-connectivity</Button>

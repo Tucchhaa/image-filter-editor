@@ -1,6 +1,6 @@
-import { useContext, useMemo, Fragment, useRef, useEffect } from "react";
+import { useContext, useMemo, Fragment, useRef, useEffect, useState } from "react";
 import { ReactCompareSlider } from "react-compare-slider";
-import { Divider, Stack, Typography, useTheme } from "@mui/joy";
+import { Button, Chip, Divider, Stack, ToggleButtonGroup, Typography, useTheme } from "@mui/joy";
 
 import { Laplacian } from "./filters/laplacian-filter";
 import { Upscaling } from "./filters/upscaling-filter";
@@ -8,16 +8,23 @@ import { Filter } from "./filters/filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
+import { Gaussian } from "./filters/gaussian-filter";
+import { Median } from "./filters/median-filter";
 
 export const Editor = () => {
     const theme = useTheme();
     const { imageHistory } = useContext(EditorContext);
+    const [compareMode, setCompareMode] = useState("previous")
 
     const filters: Filter[] = useMemo(() => [
         Laplacian,
         Upscaling,
-        GammaCorrection
+        GammaCorrection,
+        Gaussian,
+        Median
     ], []);
+
+    const currentImage = imageHistory.getCurrentImage();
 
     return (
         <div style={{ display: "flex", height: '100%' }}>
@@ -48,10 +55,30 @@ export const Editor = () => {
                 </Stack>
             </div>
             <div className="editor-image-container">
+                <div className="editor-compare-mode">
+                    <Chip variant="plain">Compare mode</Chip>
+                    <ToggleButtonGroup
+                        variant='outlined'
+                        size='sm'
+                        value={compareMode}
+                        onChange={(_, value) => {
+                            setCompareMode(value);
+                        }}
+                    >
+                        <Button value="previous">Previous</Button>
+                        <Button value="original">Original</Button>
+                    </ToggleButtonGroup>
+                </div>
+
                 <ReactCompareSlider
-                    itemOne={<CompareSliderImage imageData={imageHistory.getPreviousImage()}/>}
-                    itemTwo={<CompareSliderImage imageData={imageHistory.getCurrentImage()}/>}
+                    itemOne={<CompareSliderImage
+                        imageData={compareMode === 'original' ? imageHistory.original : imageHistory.getPreviousImage()}/>}
+                    itemTwo={<CompareSliderImage imageData={currentImage}/>}
                 />
+
+                <div style={{ marginTop: '10px' }}>
+                    <Chip variant="outlined">Resolution: {currentImage.width}x{currentImage.height}</Chip>
+                </div>
             </div>
         </div>
     );
@@ -71,13 +98,15 @@ function CompareSliderImage({ imageData }: { imageData: ImageData }) {
     }, [imageData]);
 
     return (
-        <canvas
-            style={{
-                width: '100%',
-                height: '100%',
-                display: 'block',
-             }}
-            ref={canvasRef}>
-        </canvas>
+        <div>
+            <canvas
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'block',
+                }}
+                ref={canvasRef}>
+            </canvas>
+        </div>
     );
 }
