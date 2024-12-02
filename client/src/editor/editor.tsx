@@ -1,12 +1,13 @@
 import { useContext, useMemo, Fragment, useRef, useEffect } from "react";
 import { ReactCompareSlider } from "react-compare-slider";
-import { Divider, Grid, Stack, Typography, useTheme } from "@mui/joy";
+import { Divider, Stack, Typography, useTheme } from "@mui/joy";
 
 import { Laplacian } from "./filters/laplacian-filter";
 import { Upscaling } from "./filters/upscaling-filter";
 import { Filter } from "./filters/filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
+import { GammaCorrection } from "./filters/gamma-correction";
 
 export const Editor = () => {
     const theme = useTheme();
@@ -14,21 +15,18 @@ export const Editor = () => {
 
     const filters: Filter[] = useMemo(() => [
         Laplacian,
-        Upscaling
+        Upscaling,
+        GammaCorrection
     ], []);
 
     return (
-        <Grid
-            container
-            sx={{ flexGrow: 1, height: '100%' }}
-        >
-            <Grid
-                xs={2}
-                sx={{
-                    backgroundColor: 'background.level1',
+        <div style={{ display: "flex", height: '100%' }}>
+            <div
+                style={{
+                    minWidth: '300px',
+                    backgroundColor: theme.palette.background.level1,
                 }}
             >
-
                 <div className="filters-title" style={{
                     backgroundColor: theme.palette.background.level2,
                 }}>
@@ -48,18 +46,14 @@ export const Editor = () => {
                         ))
                     }
                 </Stack>
-            </Grid>
-            <Grid xs={10} container sx={{ alignItems: 'center' }}>
-                <div className="editor-image-container">
-                    <div>
-                        <ReactCompareSlider
-                            itemOne={<CompareSliderImage imageData={imageHistory.getPreviousImage()}/>}
-                            itemTwo={<CompareSliderImage imageData={imageHistory.getCurrentImage()}/>}
-                        />
-                    </div>
-                </div>
-            </Grid>
-        </Grid>
+            </div>
+            <div className="editor-image-container">
+                <ReactCompareSlider
+                    itemOne={<CompareSliderImage imageData={imageHistory.getPreviousImage()}/>}
+                    itemTwo={<CompareSliderImage imageData={imageHistory.getCurrentImage()}/>}
+                />
+            </div>
+        </div>
     );
 };
 

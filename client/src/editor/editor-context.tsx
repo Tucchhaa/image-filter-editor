@@ -5,7 +5,7 @@ import { AppContext } from "../app-context";
 
 export interface EditorState {
     processingFilter: Filter | null;
-    applyFilter: (filter: Filter) => Promise<void>;
+    applyFilter: (filter: Filter, options: any) => Promise<void>;
     imageHistory: ImageHistory;
 }
 
@@ -22,10 +22,14 @@ export const EditorContextProvider: FC<{ children: ReactNode }> = ({ children })
     const [processingFilter, setProcessingFilter] = useState(null);
     const imageHistory = useMemo(() => new ImageHistory([imageData]), [imageData]);
 
-    const applyFilter = useCallback(async (filter: Filter) => {
+    const applyFilter = useCallback(async (filter: Filter, options: any) => {
         setProcessingFilter(filter);
 
-        const newImageData = await filter.applyFilter(imageData);
+        const startTime = Date.now();
+        const newImageData = await filter.applyFilter(imageHistory.getCurrentImage(), options);
+
+        console.log('Processing time', Date.now() - startTime);
+
         imageHistory.push(newImageData);
 
         setProcessingFilter(null);
