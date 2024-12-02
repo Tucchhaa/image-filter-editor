@@ -47,7 +47,6 @@ function Options({ setOptions }) {
     return (
         <>
             <Slider
-                sx={{ marginTop: '15px' }}
                 value={sigma}
                 step={0.05}
                 min={0.05}

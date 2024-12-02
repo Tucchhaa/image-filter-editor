@@ -11,7 +11,7 @@ type Color = [number, number, number];
 export const processImageBySegments =
     (
         imageData: ImageData, size: number,
-        accumulate: (result: Color, pixelIndex: number, kernelY: number, kernelX: number) => void
+        accumulate: (result: Color, pixelIndex: number, kernelY: number, kernelX: number, data: { [key: string]: any }) => void
     ): Promise<ImageData> =>
     new Promise(resolve => {
         const { width, height } = imageData;
@@ -22,6 +22,7 @@ export const processImageBySegments =
 
         for(let y= padding; y < height - padding; y++) {
             for(let x= padding; x < width - padding; x++) {
+                const data = {};
                 let result = [0, 0, 0] as Color;
 
                 for(let dy = -padding; dy <= padding; dy++) {
@@ -30,7 +31,7 @@ export const processImageBySegments =
                         const pixelX = x + dx;
                         const index = (pixelY * width + pixelX) * 4;
 
-                        accumulate(result, index, dy + padding, dx + padding);
+                        accumulate(result, index, dy + padding, dx + padding, data);
                     }
                 }
 

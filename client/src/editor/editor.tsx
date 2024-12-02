@@ -9,6 +9,7 @@ import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
 import { Gaussian } from "./filters/gaussian-filter";
+import { Median } from "./filters/median-filter";
 
 export const Editor = () => {
     const theme = useTheme();
@@ -20,6 +21,7 @@ export const Editor = () => {
         Upscaling,
         GammaCorrection,
         Gaussian,
+        Median
     ], []);
 
     return (

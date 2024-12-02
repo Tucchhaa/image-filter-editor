@@ -17,21 +17,20 @@ export const GammaCorrection = {
 } as Filter;
 
 function Options({ setOptions }) {
-    const [value, setValue] = useState<number>(2.2);
+    const [gamma, setGamma] = useState<number>(2.2);
 
-    const options = useMemo(() => ({ gamma: value }), [value]);
+    const options = useMemo(() => ({ gamma }), [gamma]);
 
     useEffect(() => { setOptions(options); }, [setOptions, options]);
 
     return (
         <Slider
-            sx={{ marginTop: '15px' }}
-            value={value}
+            value={gamma}
             step={0.05}
             min={0.05}
             max={5.0}
             valueLabelDisplay="on"
-            onChange={(e, newValue: number) => { setValue(newValue); }}
+            onChange={(_, value: number) => { setGamma(value); }}
         />
     )
 }
