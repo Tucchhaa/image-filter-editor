@@ -25,11 +25,12 @@ function Options({ setOptions }) {
 
     return (
         <Slider
+            sx={{ marginTop: '15px' }}
             value={value}
             step={0.05}
             min={0.05}
             max={5.0}
-            valueLabelDisplay="auto"
+            valueLabelDisplay="on"
             onChange={(e, newValue: number) => { setValue(newValue); }}
         />
     )

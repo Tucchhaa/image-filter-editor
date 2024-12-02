@@ -8,6 +8,7 @@ import { Filter } from "./filters/filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
+import { Gaussian } from "./filters/gaussian-filter";
 
 export const Editor = () => {
     const theme = useTheme();
@@ -16,7 +17,8 @@ export const Editor = () => {
     const filters: Filter[] = useMemo(() => [
         Laplacian,
         Upscaling,
-        GammaCorrection
+        GammaCorrection,
+        Gaussian,
     ], []);
 
     return (
