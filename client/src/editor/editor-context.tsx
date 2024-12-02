@@ -1,11 +1,11 @@
 import { useState, createContext, ReactNode, FC, useMemo, useCallback, useContext } from 'react'
-import { Filter } from "./filters/filter";
+import { BaseFilter } from "./filters/base-filter";
 import { ImageHistory } from "./image-history";
 import { AppContext } from "../app-context";
 
 export interface EditorState {
-    processingFilter: Filter | null;
-    applyFilter: (filter: Filter, options: any) => Promise<void>;
+    processingFilter: BaseFilter | null;
+    applyFilter: (filter: BaseFilter, options: any) => Promise<void>;
     imageHistory: ImageHistory;
 }
 
@@ -22,7 +22,7 @@ export const EditorContextProvider: FC<{ children: ReactNode }> = ({ children })
     const [processingFilter, setProcessingFilter] = useState(null);
     const imageHistory = useMemo(() => new ImageHistory([imageData]), [imageData]);
 
-    const applyFilter = useCallback(async (filter: Filter, options: any) => {
+    const applyFilter = useCallback(async (filter: BaseFilter, options: any) => {
         setProcessingFilter(filter);
 
         const startTime = Date.now();

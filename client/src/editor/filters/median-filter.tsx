@@ -1,4 +1,4 @@
-import { Filter, processImageBySegments } from "./filter";
+import { BaseFilter, medianFilter } from "./base-filter";
 import { Slider } from "@mui/joy";
 import { useEffect, useMemo, useState } from "react";
 
@@ -6,30 +6,8 @@ export const Median = {
     name: "Median",
     Options,
     applyFilter: (imageData: ImageData, { size }) =>
-        processImageBySegments(
-            imageData, size,
-            (result, pixelIndex, _1, _2, data) => {
-                if(data.r === undefined) {
-                    data.r = [];
-                    data.g = [];
-                    data.b = [];
-                }
-
-                data.r.push(imageData.data[pixelIndex]);
-                data.g.push(imageData.data[pixelIndex+1]);
-                data.b.push(imageData.data[pixelIndex+2]);
-
-                if(data.r.length < size*size)
-                    return;
-
-                const m = Math.floor(size / 2);
-
-                result[0] = data.r.sort()[m];
-                result[1] = data.g.sort()[m];
-                result[2] = data.b.sort()[m];
-            }
-        )
-} as Filter;
+        medianFilter(imageData, size)
+} as BaseFilter;
 
 function Options({ setOptions }) {
     const [size, setSize] = useState(3);

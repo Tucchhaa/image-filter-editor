@@ -1,6 +1,6 @@
-import { convolution, Filter } from "./filter";
+import { convolution, BaseFilter } from "./base-filter";
 import { Button, ToggleButtonGroup } from "@mui/joy";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const Laplacian = {
     name: "Laplacian",
@@ -20,7 +20,7 @@ export const Laplacian = {
 
         return convolution(imageData, kernel);
     }
-} as Filter;
+} as BaseFilter;
 
 function Options({ setOptions }) {
     const [type, setType] = useState<string>('4-connectivity');

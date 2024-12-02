@@ -1,4 +1,4 @@
-import { Filter } from "./filter";
+import { BaseFilter } from "./base-filter";
 
 interface UploadResponse {
     message?: string;
@@ -51,7 +51,7 @@ export const Upscaling = {
             return imageData;
         }
     }
-} as Filter;
+} as BaseFilter;
 
 function Options() {
     return (

@@ -1,4 +1,4 @@
-import { convolution, Filter } from "./filter";
+import { convolution, BaseFilter } from "./base-filter";
 import { Chip, Slider } from "@mui/joy";
 import { useEffect, useMemo, useState } from "react";
 
@@ -35,7 +35,7 @@ export const Gaussian = {
 
         return convolution(imageData, kernel);
     }
-} as Filter;
+} as BaseFilter;
 
 function Options({ setOptions }) {
     const [sigma, setSigma] = useState<number>(2);
