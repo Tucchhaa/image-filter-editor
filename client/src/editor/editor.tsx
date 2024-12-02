@@ -24,6 +24,8 @@ export const Editor = () => {
         Median
     ], []);
 
+    const currentImage = imageHistory.getCurrentImage();
+
     return (
         <div style={{ display: "flex", height: '100%' }}>
             <div
@@ -59,7 +61,9 @@ export const Editor = () => {
                         variant='outlined'
                         size='sm'
                         value={compareMode}
-                        onChange={(_, value) => { setCompareMode(value); }}
+                        onChange={(_, value) => {
+                            setCompareMode(value);
+                        }}
                     >
                         <Button value="previous">Previous</Button>
                         <Button value="original">Original</Button>
@@ -67,9 +71,14 @@ export const Editor = () => {
                 </div>
 
                 <ReactCompareSlider
-                    itemOne={<CompareSliderImage imageData={compareMode === 'original' ? imageHistory.original : imageHistory.getPreviousImage()}/>}
-                    itemTwo={<CompareSliderImage imageData={imageHistory.getCurrentImage()}/>}
+                    itemOne={<CompareSliderImage
+                        imageData={compareMode === 'original' ? imageHistory.original : imageHistory.getPreviousImage()}/>}
+                    itemTwo={<CompareSliderImage imageData={currentImage}/>}
                 />
+
+                <div style={{ marginTop: '10px' }}>
+                    <Chip variant="outlined">Resolution: {currentImage.width}x{currentImage.height}</Chip>
+                </div>
             </div>
         </div>
     );
@@ -89,13 +98,15 @@ function CompareSliderImage({ imageData }: { imageData: ImageData }) {
     }, [imageData]);
 
     return (
-        <canvas
-            style={{
-                width: '100%',
-                height: '100%',
-                display: 'block',
-             }}
-            ref={canvasRef}>
-        </canvas>
+        <div>
+            <canvas
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'block',
+                }}
+                ref={canvasRef}>
+            </canvas>
+        </div>
     );
 }
