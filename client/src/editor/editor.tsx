@@ -10,6 +10,9 @@ import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
 import { Gaussian } from "./filters/gaussian-filter";
 import { Median } from "./filters/median-filter";
+import { SobelEdgeDetection } from "./filters/sobel-edge-filter";
+import { BilateralFilter } from "./filters/bilateral-filter";
+import { Pixelate } from "./filters/pixelate-filter";
 
 export const Editor = () => {
     const theme = useTheme();
@@ -21,7 +24,10 @@ export const Editor = () => {
         Upscaling,
         GammaCorrection,
         Gaussian,
-        Median
+        Median,
+        SobelEdgeDetection,
+        BilateralFilter,
+        Pixelate
     ], []);
 
     const currentImage = imageHistory.getCurrentImage();
