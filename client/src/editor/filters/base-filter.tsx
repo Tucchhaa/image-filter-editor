@@ -1,6 +1,7 @@
 // @ts-ignore
 import FilteringWorker from './filtering-worker?worker'
 import * as Comlink from 'comlink';
+import React from 'react';
 
 export type BaseFilter = {
     name: string;
