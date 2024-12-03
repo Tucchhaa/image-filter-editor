@@ -1,6 +1,6 @@
 {
 	// https://www.totaltypescript.com/tsconfig-cheat-sheet
-	"include": ["**/*.ts", "**/*.js"],
+	"include": ["**/*.ts", "**/*.js", "src/editor/filters/edge-glow.tsx"],
 	"exclude": ["**/node_modules/**", "**/dist/**"],
 	"compilerOptions": {
 		"esModuleInterop": true,

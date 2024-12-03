@@ -10,6 +10,8 @@ import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
 import { Gaussian } from "./filters/gaussian-filter";
 import { Median } from "./filters/median-filter";
+import { EdgeGlowFilter } from "./filters/edge-glow";
+import { MosaicMadnessFilter } from "./filters/mosaic-madness";
 
 export const Editor = () => {
     const theme = useTheme();
@@ -21,7 +23,9 @@ export const Editor = () => {
         Upscaling,
         GammaCorrection,
         Gaussian,
-        Median
+        Median,
+        EdgeGlowFilter,
+        MosaicMadnessFilter
     ], []);
 
     const currentImage = imageHistory.getCurrentImage();
