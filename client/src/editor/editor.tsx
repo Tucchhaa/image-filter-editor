@@ -4,16 +4,15 @@ import { Button, Chip, Divider, Stack, ToggleButtonGroup, Typography, useTheme }
 
 import { Laplacian } from "./filters/laplacian-filter";
 import { Upscaling } from "./filters/upscaling-filter";
-import { SobelEdgeDetection } from "./filters/sobel-edge-filter";
-import { BilateralFilter } from "./filters/bilateral-filter";
-import { Pixelate } from "./filters/pixelate-filter";
 import { BaseFilter } from "./filters/base-filter";
-import { Filter } from "./filters/filter";
 import { EditorContext } from "./editor-context";
 import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
 import { Gaussian } from "./filters/gaussian-filter";
 import { Median } from "./filters/median-filter";
+import { SobelEdgeDetection } from "./filters/sobel-edge-filter";
+import { BilateralFilter } from "./filters/bilateral-filter";
+import { Pixelate } from "./filters/pixelate-filter";
 
 export const Editor = () => {
     const theme = useTheme();
