@@ -1,2 +1,4 @@
 client/node_modules
 .idea
+server/.idea
+server/.venv
