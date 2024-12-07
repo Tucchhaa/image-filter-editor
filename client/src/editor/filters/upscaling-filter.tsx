@@ -14,6 +14,7 @@ export const Upscaling = {
         const canvas = document.createElement('canvas');
         canvas.width = imageData.width;
         canvas.height = imageData.height;
+
         const ctx = canvas.getContext('2d');
         ctx.putImageData(imageData, 0, 0);
     
@@ -30,21 +31,29 @@ export const Upscaling = {
                 body: formData,
                 mode: 'cors',
             });
-    
-            const { url } = await response.json() as UploadResponse;
-            if (!url) throw new Error('No image URL returned');
-    
-            const imageResponse = await fetch(url, { mode: 'cors' });
-            const responseBlob = await imageResponse.blob();
-            const bitmap = await createImageBitmap(responseBlob);
-            
-            const resultCanvas = document.createElement('canvas');
-            resultCanvas.width = bitmap.width;
-            resultCanvas.height = bitmap.height;
-            const resultCtx = resultCanvas.getContext('2d')!;
-            resultCtx.drawImage(bitmap, 0, 0);
-            
-            return resultCtx.getImageData(0, 0, bitmap.width, bitmap.height);
+
+            const json = await response.json() as { status: string; message: string; format: string; image: string };
+
+            const mimeType = `image/${json.format.toLowerCase()}`;
+            const imageDataURL = `data:${mimeType};base64,${json.image}`;
+
+            const upscaledImage = new Image();
+            upscaledImage.src = imageDataURL;
+
+            await new Promise<void>((resolve, reject) => {
+                upscaledImage.onload = () => resolve();
+                upscaledImage.onerror = (err) => reject(err);
+            });
+
+            // Draw the image to a new canvas to get ImageData
+            const canvas = document.createElement('canvas');
+            canvas.width = upscaledImage.width;
+            canvas.height = upscaledImage.height;
+
+            const ctx = canvas.getContext('2d')!;
+            ctx.drawImage(upscaledImage, 0, 0);
+
+            return ctx.getImageData(0, 0, upscaledImage.width, upscaledImage.height);
     
         } catch (error) {
             console.error('Error upscaling image:', error);
