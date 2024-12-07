@@ -10,14 +10,16 @@ import { EditorItem } from "./editor-item";
 import { GammaCorrection } from "./filters/gamma-correction";
 import { Gaussian } from "./filters/gaussian-filter";
 import { Median } from "./filters/median-filter";
+import { EdgeGlowFilter } from "./filters/edge-glow";
+import { MosaicMadnessFilter } from "./filters/mosaic-madness";
 import { SobelEdgeDetection } from "./filters/sobel-edge-filter";
 import { BilateralFilter } from "./filters/bilateral-filter";
 import { Pixelate } from "./filters/pixelate-filter";
 
 export const Editor = () => {
     const theme = useTheme();
-    const { imageHistory } = useContext(EditorContext);
     const [compareMode, setCompareMode] = useState("previous")
+    const { imageHistory, setCurrentHistoryIndex } = useContext(EditorContext);
 
     const filters: BaseFilter[] = useMemo(() => [
         Laplacian,
@@ -25,10 +27,33 @@ export const Editor = () => {
         GammaCorrection,
         Gaussian,
         Median,
+        EdgeGlowFilter,
+        MosaicMadnessFilter,
         SobelEdgeDetection,
         BilateralFilter,
         Pixelate
     ], []);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const isMac = navigator.platform.toUpperCase().includes('MAC');
+            const isCtrlZ = isMac ? event.metaKey && event.key === 'z' : event.ctrlKey && event.key === 'z';
+
+            if (isCtrlZ) {
+                event.preventDefault();
+
+                const newIndex = event.shiftKey ? imageHistory.currentIndex + 1 : imageHistory.currentIndex - 1;
+
+                setCurrentHistoryIndex(newIndex);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [setCurrentHistoryIndex]);
 
     const currentImage = imageHistory.getCurrentImage();
 
@@ -82,8 +107,10 @@ export const Editor = () => {
                     itemTwo={<CompareSliderImage imageData={currentImage}/>}
                 />
 
-                <div style={{ marginTop: '10px' }}>
+                <div style={{ marginTop: '10px', textAlign: 'center' }}>
                     <Chip variant="outlined">Resolution: {currentImage.width}x{currentImage.height}</Chip>
+                    <br/>
+                    <Chip variant="plain">Use Ctrl+Z and Ctrl+Shift+Z to move through history</Chip>
                 </div>
             </div>
         </div>
