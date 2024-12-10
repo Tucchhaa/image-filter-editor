@@ -1,15 +1,14 @@
 import { BaseFilter } from "./base-filter";
-
-interface UploadResponse {
-    message?: string;
-    url?: string;
-}
+import { Button, ToggleButtonGroup, Typography } from "@mui/joy";
+import { useState, useEffect } from 'react';
 
 export const Upscaling = {
     name: "Upscale",
     Options,
     applyFilter: async (imageData: ImageData) => {
         const API_URL = 'http://localhost:5100';
+        // default to gan
+        const upscalingMethod = localStorage.getItem('upscalingMethod') || 'gan';
     
         const canvas = document.createElement('canvas');
         canvas.width = imageData.width;
@@ -24,6 +23,7 @@ export const Upscaling = {
     
         const formData = new FormData();
         formData.append('file', blob, 'image.png');
+        formData.append('method', upscalingMethod);
     
         try {
             const response = await fetch(`${API_URL}/upscale`, {
@@ -32,7 +32,13 @@ export const Upscaling = {
                 mode: 'cors',
             });
 
-            const json = await response.json() as { status: string; message: string; format: string; image: string };
+            const json = await response.json() as { 
+                status: string; 
+                message: string; 
+                format: string; 
+                image: string;
+                method?: string;
+            };
 
             const mimeType = `image/${json.format.toLowerCase()}`;
             const imageDataURL = `data:${mimeType};base64,${json.image}`;
@@ -63,9 +69,29 @@ export const Upscaling = {
 } as BaseFilter;
 
 function Options() {
+    const [upscalingMethod, setUpscalingMethod] = useState(
+        localStorage.getItem('upscalingMethod') || 'gan'
+    );
+
+    const handleMethodChange = (method: string) => {
+        setUpscalingMethod(method);
+        localStorage.setItem('upscalingMethod', method);
+    };
+
     return (
         <>
-            <i>No options available</i>
+            <Typography level="body-sm" sx={{ mb: 1 }}>
+                Upscaling Method
+            </Typography>
+            <ToggleButtonGroup
+                variant="outlined"
+                size="sm"
+                value={upscalingMethod}
+                onChange={(_, value) => value && handleMethodChange(value)}
+            >
+                <Button value="gan">GAN</Button>
+                <Button value="resnet">ResNet</Button>
+            </ToggleButtonGroup>
         </>
-    )
+    );
 }
