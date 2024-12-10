@@ -25,3 +25,15 @@ export async function gammaCorrection(imageData: ImageData, gammaInverse: number
 export async function medianFilter(imageData: ImageData, size: number): Promise<ImageData> {
     return await workerApi.medianFilter(imageData, size);
 }
+
+export async function sobelEdgeDetection(imageData: ImageData, threshold: number): Promise<ImageData> {
+    return await workerApi.sobelEdgeDetection(imageData, threshold);
+}
+
+export async function pixelate(imageData: ImageData, pixelSize: number): Promise<ImageData> {
+    return await workerApi.pixelate(imageData, pixelSize);
+}
+
+export async function bilateralFilter(imageData: ImageData, sigmaColor: number, sigmaSpace: number): Promise<ImageData> {
+    return await workerApi.bilateralFilter(imageData, sigmaColor, sigmaSpace);
+}
