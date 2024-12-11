@@ -68,18 +68,37 @@ export const Upscaling = {
     }
 } as BaseFilter;
 
-function Options() {
+function Options({ setOptions }) {
     const [upscalingMethod, setUpscalingMethod] = useState(
         localStorage.getItem('upscalingMethod') || 'gan'
     );
+    const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
     const handleMethodChange = (method: string) => {
         setUpscalingMethod(method);
         localStorage.setItem('upscalingMethod', method);
     };
 
+    const handleDownload = () => {
+        if (!downloadUrl) return;
+
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `upscaled_image_${upscalingMethod}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    useEffect(() => {
+        setOptions({ 
+            setDownloadUrl,
+            method: upscalingMethod 
+        });
+    }, [setOptions, setDownloadUrl, upscalingMethod]);
+
     return (
-        <>
+        <div className="flex flex-col space-y-2">
             <Typography level="body-sm" sx={{ mb: 1 }}>
                 Upscaling Method
             </Typography>
@@ -92,6 +111,17 @@ function Options() {
                 <Button value="gan">GAN</Button>
                 <Button value="resnet">ResNet</Button>
             </ToggleButtonGroup>
-        </>
+
+            {downloadUrl && (
+                <Button 
+                    variant="soft" 
+                    color="primary" 
+                    startDecorator={<Download size={16} />}
+                    onClick={handleDownload}
+                >
+                    Download Upscaled Image
+                </Button>
+            )}
+        </div>
     );
 }
